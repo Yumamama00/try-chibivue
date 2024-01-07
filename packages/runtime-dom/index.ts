@@ -5,9 +5,10 @@ import {
   h
 } from '../runtime-core'
 import { nodeOps } from './nodeOps'
+import { patchProp } from './patchProp'
 
 // DOMに依存したRendererOptionsを注入してrendererを生成
-const { render } = createRenderer(nodeOps)
+const { render } = createRenderer({ ...nodeOps, patchProp })
 
 const _createApp = createAppAPI(render)
 
@@ -22,3 +23,5 @@ export const createApp = ((...args) => {
 
   return app
 }) as CreateAppFunction<Element>
+
+export { h }

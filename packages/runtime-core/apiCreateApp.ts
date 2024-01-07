@@ -1,6 +1,6 @@
+import { ReactiveEffect } from "../reactivity";
 import { Component } from "./component";
 import { RootRenderFunction } from "./renderer";
-import { VNode } from "./vnode";
 
 export interface App<HostElement> {
   mount(rootContainer: HostElement | string): void;
@@ -16,8 +16,15 @@ export function createAppAPI<HostElement>(
   return function createApp(rootComponent) {
     const app: App<HostElement> = {
       mount(rootContainer: HostElement) {
-        const root: VNode = rootComponent.render!();
-        render(root, rootContainer);
+        const componentRender = rootComponent.setup!();
+
+        const updateComponent = () => {
+          const vnode = componentRender();
+          render(vnode, rootContainer);
+        };
+
+        const effect = new ReactiveEffect(updateComponent);
+        effect.run();
       },
     };
 

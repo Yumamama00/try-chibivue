@@ -49,8 +49,11 @@ export function createRenderer(options: RendererOptions) {
     return el;
   }
 
-  const render: RootRenderFunction = (root, container) => {
-    const el = renderVNode(root);
+  const render: RootRenderFunction = (vnode, container) => {
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    const el = renderVNode(vnode);
     hostInsert(el, container);
   };
 

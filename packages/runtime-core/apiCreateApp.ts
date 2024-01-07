@@ -1,7 +1,8 @@
 import { Component } from "./component";
 import { RootRenderFunction } from "./renderer";
+import { VNode } from "./vnode";
 
-export interface App<HostElement = any> {
+export interface App<HostElement> {
   mount(rootContainer: HostElement | string): void;
 }
 
@@ -13,10 +14,10 @@ export function createAppAPI<HostElement>(
   render: RootRenderFunction<HostElement>
 ): CreateAppFunction<HostElement> {
   return function createApp(rootComponent) {
-    const app: App = {
+    const app: App<HostElement> = {
       mount(rootContainer: HostElement) {
-        const message = rootComponent.render!();
-        render(message, rootContainer);
+        const root: VNode = rootComponent.render!();
+        render(root, rootContainer);
       },
     };
 

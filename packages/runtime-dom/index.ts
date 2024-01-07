@@ -1,10 +1,13 @@
 import {
   CreateAppFunction,
+  RendererOptions,
   createAppAPI,
   createRenderer,
 } from "../runtime-core";
 import { nodeOps } from "./nodeOps";
 import { patchProp } from "./patchProp";
+
+export type DOMRendererOptions = RendererOptions<Node, Element>;
 
 // DOMに依存したRendererOptionsを注入してrendererを生成
 const { render } = createRenderer({ ...nodeOps, patchProp });

@@ -4,6 +4,8 @@ export interface RendererNode {
   [key: string]: any;
 }
 
+export interface RendererElement extends RendererNode {}
+
 export interface RendererOptions<
   HostNode = RendererNode,
   HostElement = RendererElement,
@@ -15,10 +17,8 @@ export interface RendererOptions<
   patchProp(el: HostElement, key: string, value: any): void;
 }
 
-export interface RendererElement extends RendererNode {}
-
 export type RootRenderFunction<HostElement = RendererElement> = (
-  message: string,
+  vnode: VNode,
   container: HostElement
 ) => void;
 
@@ -49,8 +49,8 @@ export function createRenderer(options: RendererOptions) {
     return el;
   }
 
-  const render: RootRenderFunction = (vnode, container) => {
-    const el = renderVNode(vnode);
+  const render: RootRenderFunction = (root, container) => {
+    const el = renderVNode(root);
     hostInsert(el, container);
   };
 

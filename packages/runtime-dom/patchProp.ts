@@ -2,7 +2,6 @@ import { RendererOptions } from "../runtime-core";
 import { patchEvent } from "./modules/events";
 import { patchAttr } from "./modules/attrs";
 
-
 type DOMRendererOptions = RendererOptions<Node, Element>;
 
 const onRE = /^on[^a-z]/;

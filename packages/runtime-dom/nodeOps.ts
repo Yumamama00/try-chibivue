@@ -1,4 +1,4 @@
-import { RendererOptions } from '../runtime-core'
+import { RendererOptions } from "../runtime-core";
 
 export const nodeOps: Omit<RendererOptions, "patchProp"> = {
   createElement: (tagName) => {
@@ -16,4 +16,4 @@ export const nodeOps: Omit<RendererOptions, "patchProp"> = {
   insert: (child, parent, anchor) => {
     parent.insertBefore(child, anchor || null);
   },
-}
+};

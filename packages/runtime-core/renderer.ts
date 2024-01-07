@@ -1,13 +1,13 @@
 import { VNode } from "./vnode";
 
 export interface RendererNode {
-  [key: string]: any
+  [key: string]: any;
 }
 
 export interface RendererOptions<
   HostNode = RendererNode,
-  HostElement = RendererElement
->{
+  HostElement = RendererElement,
+> {
   createElement(type: string): HostNode;
   createText(text: string): HostNode;
   setElementText(node: HostNode, text: string): void;
@@ -20,14 +20,14 @@ export interface RendererElement extends RendererNode {}
 export type RootRenderFunction<HostElement = RendererElement> = (
   message: string,
   container: HostElement
-) => void
+) => void;
 
 export function createRenderer(options: RendererOptions) {
   const {
     createElement: hostCreateElement,
     createText: hostCreateText,
     insert: hostInsert,
-    patchProp: hostPatchProp
+    patchProp: hostPatchProp,
   } = options;
 
   function renderVNode(vnode: VNode | string) {

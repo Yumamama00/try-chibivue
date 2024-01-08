@@ -16,4 +16,8 @@ export const nodeOps: Omit<DOMRendererOptions, "patchProp"> = {
   insert: (child, parent, anchor) => {
     parent.insertBefore(child, anchor || null);
   },
+
+  setText: (node, text) => {
+    node.nodeValue = text;
+  },
 };

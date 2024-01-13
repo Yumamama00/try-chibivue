@@ -1,12 +1,12 @@
-import { createApp, h, reactive } from "chibivue";
+import { Component, createApp, h, reactive } from "chibivue";
 
-const MyComponent = {
-  props: { someMessage: { type: String } },
+const MyComponent: Component = {
+  props: { message: { type: String } },
 
   setup(props: any, { emit }: any) {
     return () =>
       h("div", {}, [
-        h("p", {}, [`someMessage: ${props.someMessage}`]),
+        h("p", {}, [`message: ${props.message}`]),
         h("button", { onClick: () => emit("click:change-message") }, [
           "change message",
         ]),
@@ -26,7 +26,7 @@ const app = createApp({
         h(
           MyComponent,
           {
-            "some-message": state.message,
+            message: state.message,
             "onClick:change-message": changeMessage,
           },
           []

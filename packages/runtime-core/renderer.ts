@@ -195,9 +195,12 @@ export function createRenderer(options: RendererOptions) {
         instance.isMounted = true;
       } else {
         // patch process
-        let { next } = instance;
-        const { vnode } = instance;
+        // eslint-disable-next-line prefer-const
+        let { next, vnode } = instance;
 
+        // updateComponent
+        // コンポーネント自身のステートの変化によって引き起こされる (next: null)
+        // OR 親がprocessComponentを呼び出すことによって引き起こされる (next: VNode)
         if (next) {
           next.el = vnode.el;
           next.component = instance;

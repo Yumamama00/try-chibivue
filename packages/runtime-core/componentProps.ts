@@ -18,9 +18,11 @@ export function initProps(
 ) {
   const props: Data = {};
   setFullProps(instance, rawProps, props);
+  // コンポーネントインスタンスのpropsにリアクティブなpropsをセット
   instance.props = reactive(props);
 }
 
+// コンポーネントのpropsOptionを考慮 & 正規化しつつ、propsをセット
 function setFullProps(
   instance: ComponentInternalInstance,
   rawProps: Data | null,
@@ -40,6 +42,7 @@ function setFullProps(
   }
 }
 
+// インスタンスに紐づくpropsの更新
 export function updateProps(
   instance: ComponentInternalInstance,
   rawProps: Data | null

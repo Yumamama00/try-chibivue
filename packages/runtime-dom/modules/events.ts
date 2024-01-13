@@ -4,22 +4,7 @@ interface Invoker extends EventListener {
 
 type EventValue = Function;
 
-export function addEventListener(
-  el: Element,
-  event: string,
-  handler: EventListener
-) {
-  el.addEventListener(event, handler);
-}
-
-export function removeEventListener(
-  el: Element,
-  event: string,
-  handler: EventListener
-) {
-  el.removeEventListener(event, handler);
-}
-
+// イベントハンドラ
 export function patchEvent(
   el: Element & { _vei?: Record<string, Invoker | undefined> },
   rawName: string,
@@ -44,6 +29,18 @@ export function patchEvent(
       invokers[rawName] = undefined;
     }
   }
+}
+
+function addEventListener(el: Element, event: string, handler: EventListener) {
+  el.addEventListener(event, handler);
+}
+
+function removeEventListener(
+  el: Element,
+  event: string,
+  handler: EventListener
+) {
+  el.removeEventListener(event, handler);
 }
 
 function parseName(rowName: string): string {

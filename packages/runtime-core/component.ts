@@ -10,9 +10,9 @@ export type Data = Record<string, unknown>;
 
 export interface ComponentInternalInstance {
   type: Component;
-  vnode: VNode;
-  subTree: VNode;
-  next: VNode | null;
+  vnode: VNode; // コンポーネントのVNode自体
+  subTree: VNode; // コンポーネントのレンダリング結果であるVNode
+  next: VNode | null; // コンポーネントのレンダリング結果であるVNode
   effect: ReactiveEffect;
   render: InternalRenderFunction;
   update: () => void;

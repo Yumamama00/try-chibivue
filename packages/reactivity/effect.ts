@@ -9,8 +9,7 @@ export class ReactiveEffect<T = any> {
   constructor(public fn: () => T) {}
 
   run() {
-    // ※ fnを実行する前のactiveEffectを保持しておいて、実行が終わった後元に戻します。
-    // これをやらないと、どんどん上書きしてしまって、意図しない挙動をしてしまいます。(用が済んだら元に戻そう)
+    // ※ fnを実行する前のactiveEffectを保持しておいて、実行が終わった後は元に戻す
     const parent: ReactiveEffect | undefined = activeEffect;
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     activeEffect = this;
@@ -20,6 +19,7 @@ export class ReactiveEffect<T = any> {
   }
 }
 
+// 自身を参照している関数を登録する
 export function track(target: object, key: unknown) {
   let depsMap = targetMap.get(target);
   if (!depsMap) {
@@ -36,6 +36,7 @@ export function track(target: object, key: unknown) {
   }
 }
 
+// 自身を参照している関数リストを実行する
 export function trigger(target: object, key?: unknown) {
   const depsMap = targetMap.get(target);
   if (!depsMap) return;

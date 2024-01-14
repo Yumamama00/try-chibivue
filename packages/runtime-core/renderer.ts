@@ -2,10 +2,10 @@ import { ReactiveEffect } from "../reactivity";
 import {
   Component,
   ComponentInternalInstance,
-  InternalRenderFunction,
   createComponentInstance,
+  setupComponent,
 } from "./component";
-import { initProps, updateProps } from "./componentProps";
+import { updateProps } from "./componentProps";
 import { Text, VNode, createVNode, normalizeVNode } from "./vnode";
 
 // render関数の型
@@ -161,19 +161,7 @@ export function createRenderer(options: RendererOptions) {
     // コンポーネントのインスタンス生成
     const instance: ComponentInternalInstance = (initialVNode.component =
       createComponentInstance(initialVNode));
-
-    // init props
-    const { props } = instance.vnode;
-    initProps(instance, props);
-
-    // コンポーネントインスタンスのrenderメソッドはsetup関数の実行結果 (render関数)
-    const component = initialVNode.type as Component;
-    if (component.setup) {
-      instance.render = component.setup(instance.props, {
-        emit: instance.emit,
-      }) as InternalRenderFunction;
-    }
-
+    setupComponent(instance);
     setupRenderEffect(instance, initialVNode, container);
   };
 

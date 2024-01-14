@@ -7,6 +7,7 @@ import {
 import { nodeOps } from "./nodeOps";
 import { patchProp } from "./patchProp";
 
+export { h } from "../runtime-core";
 export type DOMRendererOptions = RendererOptions<Node, Element>;
 
 // DOMに依存したRendererOptionsの実装を注入してrendererを生成

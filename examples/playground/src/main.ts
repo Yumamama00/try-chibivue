@@ -1,8 +1,11 @@
-import { createApp, h, shallowRef } from "chibivue";
+import { createApp, h, shallowRef, triggerRef } from "chibivue";
 
 const app = createApp({
   setup() {
     const state = shallowRef({ count: 0 });
+    const forceUpdate = () => {
+      triggerRef(state);
+    };
 
     return () =>
       h("div", {}, [
@@ -26,6 +29,12 @@ const app = createApp({
             },
           },
           ["not trigger ..."]
+        ),
+
+        h(
+          "button", // 描画が今の state.value.count が持つ値に更新される
+          { onClick: forceUpdate },
+          ["force update !"]
         ),
       ]);
   },

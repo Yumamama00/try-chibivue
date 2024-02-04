@@ -25,6 +25,10 @@ export function ref<T = any>(value?: T) {
   return createRef(value, false);
 }
 
+export function triggerRef(ref: RefBase<any>) {
+  triggerRefValue(ref);
+}
+
 function createRef(rawValue: unknown, shallow: boolean) {
   if (isRef(rawValue)) {
     return rawValue;

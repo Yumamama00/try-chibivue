@@ -36,6 +36,10 @@ export function track(target: object, key: unknown) {
     depsMap.set(key, (dep = createDep()));
   }
 
+  trackEffect(dep);
+}
+
+export function trackEffect(dep: Dep) {
   if (activeEffect) {
     dep.add(activeEffect);
   }
@@ -50,13 +54,18 @@ export function trigger(target: object, key?: unknown) {
 
   if (dep) {
     const effects = [...dep];
-    for (const effect of effects) {
-      triggerEffect(effect);
-    }
+    triggerEffects(effects);
   }
 }
 
-function triggerEffect(effect: ReactiveEffect) {
+export function triggerEffects(dep: Dep | ReactiveEffect[]) {
+  const effects = Array.isArray(dep) ? dep : [...dep];
+  for (const effect of effects) {
+    triggerEffect(effect);
+  }
+}
+
+export function triggerEffect(effect: ReactiveEffect) {
   if (effect.scheduler) {
     effect.scheduler(); // スケジュール管理された受動的な作用があれば、そちらを実行する
   } else {

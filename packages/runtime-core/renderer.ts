@@ -6,6 +6,7 @@ import {
   setupComponent,
 } from "./component";
 import { updateProps } from "./componentProps";
+import { SchedulerJob, queueJob } from "./scheduler";
 import { Text, VNode, createVNode, normalizeVNode } from "./vnode";
 
 // render関数の型
@@ -209,9 +210,14 @@ export function createRenderer(options: RendererOptions) {
     };
 
     // コンポーネントを更新する関数をReactiveEffectとして定義して初回実行する
-    const effect = (instance.effect = new ReactiveEffect(componentUpdateFn));
-    const update = (instance.update = () => effect.run()); // instance.updateに登録
-    update();
+    // ReactiveEffectの第 1 引数が能動的な作用, 第 2 引数が受動的な作用
+    const effect = (instance.effect = new ReactiveEffect(
+      componentUpdateFn,
+      () => queueJob(update) // コンポーネント更新updateロジックをqueueする関数
+    ));
+    const update: SchedulerJob = (instance.update = () => effect.run());
+    update.id = instance.uid;
+    update(); // 能動的に作用を実行
   };
 
   const updateComponent = (n1: VNode, n2: VNode) => {

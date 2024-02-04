@@ -22,7 +22,11 @@ export interface ComponentInternalInstance {
   props: Data;
   emit: (event: string, ...args: any[]) => void;
   setupState: Data;
+  uid: number;
 }
+
+// コンポーネントのUID。インクリメントしていく
+let uid = 0;
 
 export type InternalRenderFunction = {
   (ctx: Data): VNodeChild;
@@ -34,6 +38,7 @@ export function createComponentInstance(
   const component = vnode.type as Component;
 
   const instance: ComponentInternalInstance = {
+    uid: uid++,
     type: component,
     vnode,
     next: null,

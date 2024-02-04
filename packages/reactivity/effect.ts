@@ -5,8 +5,13 @@ const targetMap = new WeakMap<any, KeyToDepMap>();
 
 export let activeEffect: ReactiveEffect | undefined;
 
+export type EffectScheduler = (...args: any[]) => any;
+
 export class ReactiveEffect<T = any> {
-  constructor(public fn: () => T) {}
+  constructor(
+    public fn: () => T, // 能動的な作用
+    public scheduler: EffectScheduler | null = null // 受動的な作用 (スケジュール管理)
+  ) {}
 
   run() {
     // ※ fnを実行する前のactiveEffectを保持しておいて、実行が終わった後は元に戻す
@@ -46,7 +51,15 @@ export function trigger(target: object, key?: unknown) {
   if (dep) {
     const effects = [...dep];
     for (const effect of effects) {
-      effect.run();
+      triggerEffect(effect);
     }
+  }
+}
+
+function triggerEffect(effect: ReactiveEffect) {
+  if (effect.scheduler) {
+    effect.scheduler(); // スケジュール管理された受動的な作用があれば、そちらを実行する
+  } else {
+    effect.run(); // なければ通常の作用を実行する
   }
 }

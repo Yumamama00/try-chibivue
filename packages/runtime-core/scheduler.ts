@@ -10,6 +10,8 @@ let flushIndex = 0;
 let isFlushing = false;
 let isFlushPending = false;
 
+// Promise・Microtasks queueの参考
+// https://javascript.info/microtask-queue
 let currentFlushPromise: Promise<void> | null = null;
 const resolvedPromise = Promise.resolve();
 

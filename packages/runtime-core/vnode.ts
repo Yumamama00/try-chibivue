@@ -11,7 +11,7 @@ export interface VNode<HostNode = any> {
   children: VNodeNormalizedChildren;
 
   el: HostNode | undefined;
-  component: ComponentInternalInstance | null;
+  instance: ComponentInternalInstance | null;
 }
 
 export interface VNodeProps {
@@ -36,7 +36,7 @@ export function createVNode(
     children,
 
     el: undefined,
-    component: null,
+    instance: null,
   };
 
   return vnode;

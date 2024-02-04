@@ -159,7 +159,7 @@ export function createRenderer(options: RendererOptions) {
 
   const mountComponent = (initialVNode: VNode, container: RendererElement) => {
     // コンポーネントのインスタンス生成
-    const instance: ComponentInternalInstance = (initialVNode.component =
+    const instance: ComponentInternalInstance = (initialVNode.instance =
       createComponentInstance(initialVNode));
     setupComponent(instance);
     setupRenderEffect(instance, initialVNode, container);
@@ -191,7 +191,7 @@ export function createRenderer(options: RendererOptions) {
         // OR 親がprocessComponentを呼び出すことによって引き起こされる (next: VNode)
         if (next) {
           next.el = vnode.el;
-          next.component = instance;
+          next.instance = instance;
           instance.vnode = next;
           instance.next = null;
           updateProps(instance, next.props);
@@ -215,7 +215,7 @@ export function createRenderer(options: RendererOptions) {
   };
 
   const updateComponent = (n1: VNode, n2: VNode) => {
-    const instance = (n2.component = n1.component)!;
+    const instance = (n2.instance = n1.instance)!;
     instance.next = n2;
     instance.update();
   };

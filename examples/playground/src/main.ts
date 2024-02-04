@@ -1,13 +1,32 @@
-import { createApp, h, ref } from "chibivue";
+import { createApp, h, shallowRef } from "chibivue";
 
 const app = createApp({
   setup() {
-    const count = ref({ test: 0 });
+    const state = shallowRef({ count: 0 });
 
     return () =>
       h("div", {}, [
-        h("p", {}, [`count: ${count.value.test}`]),
-        h("button", { onClick: () => count.value.test++ }, ["Increment"]),
+        h("p", {}, [`count: ${state.value.count}`]),
+
+        h(
+          "button",
+          {
+            onClick: () => {
+              state.value = { count: state.value.count + 1 };
+            },
+          },
+          ["increment"]
+        ),
+
+        h(
+          "button", // clickしても描画は更新されない
+          {
+            onClick: () => {
+              state.value.count++;
+            },
+          },
+          ["not trigger ..."]
+        ),
       ]);
   },
 });

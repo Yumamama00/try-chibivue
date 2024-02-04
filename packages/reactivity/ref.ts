@@ -17,15 +17,19 @@ type RefBase<T> = {
   value: T;
 };
 
-export function ref<T = any>(value?: T) {
-  return createRef(value);
+export function shallowRef<T = any>(value?: T) {
+  return createRef(value, true);
 }
 
-function createRef(rawValue: unknown) {
+export function ref<T = any>(value?: T) {
+  return createRef(value, false);
+}
+
+function createRef(rawValue: unknown, shallow: boolean) {
   if (isRef(rawValue)) {
     return rawValue;
   }
-  return new RefImpl(rawValue);
+  return new RefImpl(rawValue, shallow);
 }
 
 export function isRef(r: any): r is Ref {
@@ -38,10 +42,12 @@ class RefImpl<T> {
 
   public dep?: Dep = undefined;
   public readonly __v_isRef = true;
+  public readonly __v_isShallow;
 
-  constructor(value: T) {
+  constructor(value: T, shallow: boolean) {
     this._rawValue = value;
-    this._value = toReactive(value);
+    this._value = shallow ? value : toReactive(value);
+    this.__v_isShallow = shallow;
   }
 
   get value() {
@@ -53,7 +59,7 @@ class RefImpl<T> {
     // 値が変わったかどうかをチェックしてあげておく
     if (hasChanged(newVal, this._rawValue)) {
       this._rawValue = newVal;
-      this._value = toReactive(newVal);
+      this._value = this.__v_isShallow ? newVal : toReactive(newVal);
       triggerRefValue(this);
     }
   }

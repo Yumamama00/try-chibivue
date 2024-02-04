@@ -1,3 +1,3 @@
 export { reactive } from "./reactive";
 export { ReactiveEffect } from "./effect";
-export { ref } from "./ref";
+export { ref, shallowRef } from "./ref";

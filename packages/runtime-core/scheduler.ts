@@ -10,6 +10,7 @@ let flushIndex = 0;
 let isFlushing = false;
 let isFlushPending = false;
 
+let currentFlushPromise: Promise<void> | null = null;
 const resolvedPromise = Promise.resolve();
 
 export function queueJob(job: SchedulerJob) {
@@ -32,7 +33,7 @@ export function queueJob(job: SchedulerJob) {
 function queueFlush() {
   if (!isFlushing && !isFlushPending) {
     isFlushPending = true;
-    resolvedPromise.then(() => {
+    currentFlushPromise = resolvedPromise.then(() => {
       isFlushPending = false;
       isFlushing = true;
 
@@ -58,4 +59,12 @@ function findInsertionIndex(id: number) {
   }
 
   return start;
+}
+
+export function nextTick<T = void>(
+  this: T,
+  fn?: (this: T) => void
+): Promise<void> {
+  const p = currentFlushPromise || resolvedPromise;
+  return fn ? p.then(this ? fn.bind(this) : fn) : p;
 }

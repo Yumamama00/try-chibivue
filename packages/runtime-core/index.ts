@@ -9,6 +9,8 @@ export { createRenderer } from "./renderer";
 
 export { h } from "./h";
 
+export { nextTick } from "./scheduler";
+
 export type { Component } from "./component";
 
 type CompileFunction = (template: string) => InternalRenderFunction;

@@ -1,6 +1,6 @@
 import { hasChanged, isObject } from "../shared/general";
 import { Dep, createDep } from "./dep";
-import { trackEffect, triggerEffects } from "./effect";
+import { getDepFromReactive, trackEffect, triggerEffects } from "./effect";
 
 import { reactive } from "./reactive";
 
@@ -23,10 +23,6 @@ export function shallowRef<T = any>(value?: T) {
 
 export function ref<T = any>(value?: T) {
   return createRef(value, false);
-}
-
-export function triggerRef(ref: RefBase<any>) {
-  triggerRefValue(ref);
 }
 
 function createRef(rawValue: unknown, shallow: boolean) {
@@ -77,6 +73,63 @@ function triggerRefValue(ref: RefBase<any>) {
   const dep = ref.dep;
   if (dep) {
     triggerEffects(dep);
+  }
+}
+
+export function triggerRef(ref: RefBase<any>) {
+  triggerRefValue(ref);
+}
+
+export function toRef(
+  source: Record<string, any>,
+  key?: string,
+  defaultValue?: unknown
+): Ref | RefImpl<any> {
+  if (isRef(source)) {
+    return source;
+  } else if (isObject(source) && arguments.length > 1) {
+    return propertyToRef(source, key!, defaultValue);
+  } else {
+    return ref(source);
+  }
+}
+
+export function toRefs<T extends object>(object: T) {
+  const ret: any = Array.isArray(object) ? new Array(object.length) : {};
+  for (const key in object) {
+    ret[key] = propertyToRef(object, key);
+  }
+  return ret;
+}
+
+function propertyToRef(
+  source: Record<string, any>,
+  key: string,
+  defaultValue?: unknown
+) {
+  return new ObjectRefImpl(source, key, defaultValue) as any;
+}
+
+class ObjectRefImpl<T extends object, K extends keyof T> {
+  public readonly __v_isRef = true;
+
+  constructor(
+    private readonly _object: T,
+    private readonly _key: K,
+    private readonly _defaultValue?: T[K]
+  ) {}
+
+  get value() {
+    const val = this._object[this._key];
+    return val === undefined ? (this._defaultValue as T[K]) : val;
+  }
+
+  set value(newVal) {
+    this._object[this._key] = newVal;
+  }
+
+  get dep(): Dep | undefined {
+    return getDepFromReactive(this._object, this._key);
   }
 }
 

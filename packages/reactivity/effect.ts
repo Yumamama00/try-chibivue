@@ -7,6 +7,10 @@ export let activeEffect: ReactiveEffect | undefined;
 
 export type EffectScheduler = (...args: any[]) => any;
 
+export function getDepFromReactive(object: any, key: string | number | symbol) {
+  return targetMap.get(object)?.get(key);
+}
+
 export class ReactiveEffect<T = any> {
   constructor(
     public fn: () => T, // 能動的な作用

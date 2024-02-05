@@ -65,11 +65,11 @@ class RefImpl<T> {
   }
 }
 
-function trackRefValue(ref: RefBase<any>) {
+export function trackRefValue(ref: RefBase<any>) {
   trackEffect(ref.dep || (ref.dep = createDep()));
 }
 
-function triggerRefValue(ref: RefBase<any>) {
+export function triggerRefValue(ref: RefBase<any>) {
   const dep = ref.dep;
   if (dep) {
     triggerEffects(dep);

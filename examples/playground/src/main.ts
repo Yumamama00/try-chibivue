@@ -1,38 +1,32 @@
-import { createApp, ref, h, reactive, watch, watchEffect } from "chibivue";
+import { computed, createApp, h, reactive, ref } from "chibivue";
 
 const app = createApp({
   setup() {
-    const state = reactive({ count: 0 });
-    const stateRef = ref(0);
+    const count = reactive({ value: 0 });
+    const double = computed(() => {
+      console.log("computed (double)");
+      return count.value * 2;
+    });
+    const doubleDouble = computed(() => {
+      console.log("computed (doubleDouble)");
+      return double.value * 2;
+    });
 
-    const count = ref(0);
-    const count2 = ref(0);
-    const count3 = ref(0);
-
-    watch(
-      () => state.count,
-      () => alert("state.count was changed!"),
-      { immediate: true }
-    );
-
-    watchEffect(() => console.log(count.value));
-
-    watch([count, count2, count3], () => {
-      alert("some count was changed!");
+    const countRef = ref(0);
+    const doubleCountRef = computed(() => {
+      console.log("computed (doubleCountRef)");
+      return countRef.value * 2;
     });
 
     return () =>
       h("div", {}, [
-        h("p", {}, [`state: ${state.count}`]),
-        h("button", { onClick: () => state.count++ }, ["update state"]),
-        h("p", {}, [`stateRef: ${stateRef.value}`]),
-        h("button", { onClick: () => stateRef.value++ }, ["update stateRef"]),
         h("p", {}, [`count: ${count.value}`]),
+        h("p", {}, [`double: ${double.value}`]),
+        h("p", {}, [`doubleDouble: ${doubleDouble.value}`]),
+        //h("p", {}, [`countRef: ${countRef.value}`]),
+        h("p", {}, [`doubleCountRef: ${doubleCountRef.value}`]),
         h("button", { onClick: () => count.value++ }, ["update count"]),
-        h("p", {}, [`count2: ${count2.value}`]),
-        h("button", { onClick: () => count2.value++ }, ["update count2"]),
-        h("p", {}, [`count3: ${count3.value}`]),
-        h("button", { onClick: () => count3.value++ }, ["update count3"]),
+        h("button", { onClick: () => countRef.value++ }, ["update countRef"]),
       ]);
   },
 });

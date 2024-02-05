@@ -3,6 +3,14 @@ import { Dep } from "./dep";
 import { ReactiveEffect } from "./effect";
 import { trackRefValue, triggerRefValue } from "./ref";
 
+declare const ComputedRefSymbol: unique symbol;
+export declare const RawSymbol: unique symbol;
+
+export interface ComputedRef<T = any> {
+  readonly value: T;
+  [ComputedRefSymbol]: true;
+}
+
 export type ComputedGetter<T> = (oldValue?: T) => T;
 
 export class ComputedRefImpl<T> {

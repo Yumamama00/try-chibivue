@@ -21,6 +21,18 @@ export function watch<T>(
   callback: WatchCallback,
   option: WatchOptions = { immediate: false, deep: false }
 ) {
+  doWatch<T>(source, callback, option);
+}
+
+export function watchEffect<T>(source: WatchSource<T> | Array<WatchSource<T>>) {
+  doWatch<T>(source, null);
+}
+
+function doWatch<T>(
+  source: WatchSource<T> | Array<WatchSource<T>>,
+  callback: WatchCallback | null,
+  option: WatchOptions = { immediate: false, deep: false }
+) {
   let getter: () => any;
   let isMultiSource = false;
 
@@ -41,16 +53,21 @@ export function watch<T>(
   let oldValue: T;
 
   const jobFn = () => {
-    const newValue = effect.run();
-    if (
-      isMultiSource
-        ? (newValue as any[]).some((v, i) =>
-            hasChanged(v, (oldValue as T[])?.[i])
-          )
-        : hasChanged(newValue, oldValue)
-    ) {
-      callback(newValue, oldValue);
-      oldValue = newValue;
+    if (callback) {
+      const newValue = effect.run();
+      if (
+        isMultiSource
+          ? (newValue as any[]).some((v, i) =>
+              hasChanged(v, (oldValue as T[])?.[i])
+            )
+          : hasChanged(newValue, oldValue)
+      ) {
+        callback(newValue, oldValue);
+        oldValue = newValue;
+      }
+    } else {
+      // watchEffect
+      effect.run();
     }
   };
 

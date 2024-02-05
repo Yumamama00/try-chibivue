@@ -1,4 +1,4 @@
-import { createApp, ref, h, reactive, watch } from "chibivue";
+import { createApp, ref, h, reactive, watch, watchEffect } from "chibivue";
 
 const app = createApp({
   setup() {
@@ -15,7 +15,7 @@ const app = createApp({
       { immediate: true }
     );
 
-    watch(stateRef, () => alert("stateRef was changed!"));
+    watchEffect(() => console.log(count.value));
 
     watch([count, count2, count3], () => {
       alert("some count was changed!");

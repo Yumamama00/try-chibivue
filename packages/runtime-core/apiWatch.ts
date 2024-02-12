@@ -1,7 +1,7 @@
 import { ReactiveEffect } from "../reactivity";
 import { ComputedRef } from "../reactivity/computed";
 import { Ref, isRef } from "../reactivity/ref";
-import { hasChanged, isFunction } from "../shared/general";
+import { hasChanged, isArray, isFunction } from "../shared/general";
 
 export type WatchEffect = (onCleanup: OnCleanup) => void;
 
@@ -43,7 +43,7 @@ function doWatch<T>(
     getter = () => source();
   } else if (isRef(source)) {
     getter = () => source.value;
-  } else if (Array.isArray(source)) {
+  } else if (isArray(source)) {
     isMultiSource = true;
     getter = () => source.map((s) => (isRef(s) ? s.value : s));
   } else {

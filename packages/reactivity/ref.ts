@@ -1,8 +1,7 @@
-import { hasChanged, isObject } from "../shared/general";
+import { hasChanged, isArray, isObject } from "../shared/general";
 import { Dep, createDep } from "./dep";
 import { getDepFromReactive, trackEffect, triggerEffects } from "./effect";
-
-import { reactive } from "./reactive";
+import { toReactive } from "./reactive";
 
 declare const RefSymbol: unique symbol;
 export declare const RawSymbol: unique symbol;
@@ -95,7 +94,7 @@ export function toRef(
 }
 
 export function toRefs<T extends object>(object: T) {
-  const ret: any = Array.isArray(object) ? new Array(object.length) : {};
+  const ret: any = isArray(object) ? new Array(object.length) : {};
   for (const key in object) {
     ret[key] = propertyToRef(object, key);
   }
@@ -132,6 +131,3 @@ class ObjectRefImpl<T extends object, K extends keyof T> {
     return getDepFromReactive(this._object, this._key);
   }
 }
-
-const toReactive = <T>(value: T): T =>
-  isObject(value) ? reactive(value) : value;

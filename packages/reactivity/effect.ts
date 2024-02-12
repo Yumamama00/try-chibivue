@@ -1,4 +1,7 @@
+import { isArray, isIntegerKey } from "../shared/general";
 import { Dep, createDep } from "./dep";
+
+export const ITERATE_KEY = Symbol();
 
 type KeyToDepMap = Map<any, Dep>;
 const targetMap = new WeakMap<any, KeyToDepMap>();
@@ -54,16 +57,29 @@ export function trigger(target: object, key?: unknown) {
   const depsMap = targetMap.get(target);
   if (!depsMap) return;
 
-  const dep = depsMap.get(key);
+  const deps: (Dep | undefined)[] = [];
+  if (key !== void 0) {
+    deps.push(depsMap.get(key));
+  }
 
-  if (dep) {
-    const effects = [...dep];
-    triggerEffects(effects);
+  if (!isArray(target)) {
+    // 配列でない場合は、ITERATE_KEY に登録された effect を trigger する
+    deps.push(depsMap.get(ITERATE_KEY));
+  } else if (isIntegerKey(key)) {
+    // new index added to array -> length changes
+    deps.push(depsMap.get("length"));
+  }
+
+  for (const dep of deps) {
+    if (dep) {
+      const effects = [...dep];
+      triggerEffects(effects);
+    }
   }
 }
 
 export function triggerEffects(dep: Dep | ReactiveEffect[]) {
-  const effects = Array.isArray(dep) ? dep : [...dep];
+  const effects = isArray(dep) ? dep : [...dep];
   for (const effect of effects) {
     triggerEffect(effect);
   }

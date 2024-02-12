@@ -1,4 +1,5 @@
 import { ReactiveEffect } from "../reactivity";
+import { ShapeFlags } from "../shared/shapeFlags";
 import {
   Component,
   ComponentInternalInstance,
@@ -6,6 +7,7 @@ import {
   setupComponent,
 } from "./component";
 import { updateProps } from "./componentProps";
+import { setRef } from "./rendererTemplateRef";
 import { SchedulerJob, queueJob } from "./scheduler";
 import { Text, VNode, createVNode, normalizeVNode } from "./vnode";
 
@@ -61,15 +63,19 @@ export function createRenderer(options: RendererOptions) {
   } = options;
 
   const patch = (n1: VNode | null, n2: VNode, container: RendererElement) => {
-    const { type } = n2;
+    const { type, shapeFlag, ref } = n2;
     if (type === Text) {
       processText(n1, n2, container);
-    } else if (typeof type === "string") {
+    } else if (shapeFlag & ShapeFlags.ELEMENT) {
       processElement(n1, n2, container);
-    } else if (typeof type === "object") {
+    } else if (shapeFlag & ShapeFlags.COMPONENT) {
       processComponent(n1, n2, container);
     } else {
       // do nothing
+    }
+
+    if (ref) {
+      setRef(ref, n2);
     }
   };
 

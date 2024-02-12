@@ -1,5 +1,5 @@
-import { hasChanged } from "../shared/general";
-import { track, trigger } from "./effect";
+import { hasChanged, isArray } from "../shared/general";
+import { ITERATE_KEY, track, trigger } from "./effect";
 import { reactive } from "./reactive";
 
 export const mutableHandlers: ProxyHandler<object> = {
@@ -25,5 +25,10 @@ export const mutableHandlers: ProxyHandler<object> = {
       trigger(target, key);
     }
     return true;
+  },
+
+  ownKeys(target) {
+    track(target, isArray(target) ? "length" : ITERATE_KEY);
+    return Reflect.ownKeys(target);
   },
 };

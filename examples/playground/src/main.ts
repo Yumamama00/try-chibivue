@@ -1,32 +1,24 @@
-import { computed, createApp, h, reactive, ref } from "chibivue";
+import { createApp, h, reactive } from "chibivue";
 
 const app = createApp({
   setup() {
-    const count = reactive({ value: 0 });
-    const double = computed(() => {
-      console.log("computed (double)");
-      return count.value * 2;
-    });
-    const doubleDouble = computed(() => {
-      console.log("computed (doubleDouble)");
-      return double.value * 2;
-    });
-
-    const countRef = ref(0);
-    const doubleCountRef = computed(() => {
-      console.log("computed (doubleCountRef)");
-      return countRef.value * 2;
-    });
+    const state = reactive({ map: new Map(), set: new Set() });
 
     return () =>
       h("div", {}, [
-        h("p", {}, [`count: ${count.value}`]),
-        h("p", {}, [`double: ${double.value}`]),
-        h("p", {}, [`doubleDouble: ${doubleDouble.value}`]),
-        //h("p", {}, [`countRef: ${countRef.value}`]),
-        h("p", {}, [`doubleCountRef: ${doubleCountRef.value}`]),
-        h("button", { onClick: () => count.value++ }, ["update count"]),
-        h("button", { onClick: () => countRef.value++ }, ["update countRef"]),
+        h("h1", {}, [`ReactiveCollection`]),
+
+        h("p", {}, [
+          `map (${state.map.size}): ${JSON.stringify([...state.map])}`,
+        ]),
+        h("button", { onClick: () => state.map.set(Date.now(), "item") }, [
+          "update map",
+        ]),
+
+        h("p", {}, [
+          `set (${state.set.size}): ${JSON.stringify([...state.set])}`,
+        ]),
+        h("button", { onClick: () => state.set.add("item") }, ["update set"]),
       ]);
   },
 });
